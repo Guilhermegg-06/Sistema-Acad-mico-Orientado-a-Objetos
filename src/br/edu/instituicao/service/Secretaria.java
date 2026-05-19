@@ -6,8 +6,23 @@ import br.edu.instituicao.model.Professor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * [PADRAO] Singleton: garante que exista apenas uma instância de Secretaria.
+ * Isso evita múltiplos estados desconectados na aplicação acadêmica.
+ */
 public class Secretaria {
+    private static Secretaria instancia;
     public List pessoas = new ArrayList();
+
+    private Secretaria() {
+    }
+
+    public static Secretaria getInstance() {
+        if (instancia == null) {
+            instancia = new Secretaria();
+        }
+        return instancia;
+    }
 
     public void cadastrarAluno(Aluno aluno) {
         if (aluno != null) {
@@ -20,6 +35,14 @@ public class Secretaria {
         if (professor != null) {
             pessoas.add(professor);
             System.out.println("Professor/Coordenador cadastrado ok");
+        }
+    }
+
+    public void cadastrarPessoa(Pessoa pessoa) {
+        if (pessoa instanceof Aluno) {
+            cadastrarAluno((Aluno) pessoa);
+        } else if (pessoa instanceof Professor) {
+            cadastrarProfessor((Professor) pessoa);
         }
     }
 

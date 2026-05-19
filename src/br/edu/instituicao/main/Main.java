@@ -1,8 +1,11 @@
 package br.edu.instituicao.main;
 
+import br.edu.instituicao.factory.DefaultPessoaFactory;
+import br.edu.instituicao.factory.PessoaFactory;
 import br.edu.instituicao.interfaces.Avaliavel;
 import br.edu.instituicao.model.Aluno;
 import br.edu.instituicao.model.Coordenador;
+import br.edu.instituicao.model.Pessoa;
 import br.edu.instituicao.model.Professor;
 import br.edu.instituicao.service.RelatorioAcademico;
 import br.edu.instituicao.service.Secretaria;
@@ -12,7 +15,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Secretaria secretaria = new Secretaria();
+        Secretaria secretaria = Secretaria.getInstance();
+        PessoaFactory factory = new DefaultPessoaFactory();
         Scanner teclado = new Scanner(System.in);
 
         while (true) {
@@ -36,8 +40,8 @@ public class Main {
                 String email = teclado.nextLine();
                 System.out.print("matricula: ");
                 String mat = teclado.nextLine();
-                Aluno a = new Aluno(nome, cpf, email, mat);
-                secretaria.cadastrarAluno(a);
+                Pessoa p = factory.criarPessoa("aluno", nome, cpf, email, null, null, mat);
+                secretaria.cadastrarPessoa(p);
             } else if (op.equals("2")) {
                 System.out.print("1 prof 2 coord: ");
                 String tipo = teclado.nextLine();
@@ -51,13 +55,9 @@ public class Main {
                 String siape = teclado.nextLine();
                 System.out.print("senha: ");
                 String senha = teclado.nextLine();
-                if (tipo.equals("2")) {
-                    Coordenador c = new Coordenador(nome, cpf, email, siape, senha);
-                    secretaria.cadastrarProfessor(c);
-                } else {
-                    Professor p = new Professor(nome, cpf, email, siape, senha);
-                    secretaria.cadastrarProfessor(p);
-                }
+                String tipoPessoa = tipo.equals("2") ? "coordenador" : "professor";
+                Pessoa p = factory.criarPessoa(tipoPessoa, nome, cpf, email, siape, senha, null);
+                secretaria.cadastrarPessoa(p);
             } else if (op.equals("3")) {
                 System.out.print("1 por mat 2 por nome: ");
                 String tipo = teclado.nextLine();
